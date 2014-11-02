@@ -173,7 +173,7 @@ class WebSocketWSGI(object):
                 b"Upgrade: WebSocket\r\n"
                 b"Connection: Upgrade\r\n"
                 b"WebSocket-Origin: " + environ.get('HTTP_ORIGIN') + b"\r\n"
-                b"WebSocket-Location: " + six.b(location) + b"\r\n\r\n",
+                b"WebSocket-Location: " + six.b(location) + b"\r\n\r\n"
             )
         elif self.protocol_version == 76:
             handshake_reply = (
