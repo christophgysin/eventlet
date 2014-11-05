@@ -82,7 +82,8 @@ class Waiter(object):
             waiting = ' waiting'
         else:
             waiting = ''
-        return '<%s at %s%s greenlet=%r>' % (type(self).__name__, hex(id(self)), waiting, self.greenlet)
+        return '<%s at %s%s greenlet=%r>' % (type(self).__name__, hex(id(self)), waiting,
+                                             self.greenlet)
 
     def __str__(self):
         """
@@ -195,7 +196,8 @@ class LightQueue(object):
         """Resizes the queue's maximum size.
 
         If the size is increased, and there are putters waiting, they may be woken up."""
-        if self.maxsize is not None and (size is None or size > self.maxsize):  # None is not comparable in 3.x
+        if self.maxsize is not None and (
+                size is None or size > self.maxsize):  # None is not comparable in 3.x
             # Maybe wake some stuff up
             self._schedule_unlock()
         self.maxsize = size
@@ -219,7 +221,10 @@ class LightQueue(object):
 
         ``Queue(None)`` is never full.
         """
-        return self.maxsize is not None and self.qsize() >= self.maxsize  # None is not comparable in 3.x
+        if self.maxsize is None:
+            return false
+
+        return self.qsize() >= self.maxsize  # None is not comparable in 3.x
 
     def put(self, item, block=True, timeout=None):
         """Put an item into the queue.
@@ -345,7 +350,8 @@ class LightQueue(object):
                             putter.switch(putter)
                         else:
                             self.putters.add(putter)
-                elif self.putters and (self.getters or self.maxsize is None or self.qsize() < self.maxsize):
+                elif self.putters and (
+                        self.getters or self.maxsize is None or self.qsize() < self.maxsize):
                     putter = self.putters.pop()
                     putter.switch(putter)
                 else:

@@ -9,7 +9,8 @@ time = __import__('time')
 
 from eventlet.support import get_errno, PY33, six
 from eventlet.hubs import trampoline, IOClosed
-from eventlet.greenio import set_nonblocking, GreenSocket, SOCKET_CLOSED, CONNECT_ERR, CONNECT_SUCCESS
+from eventlet.greenio import set_nonblocking, GreenSocket
+from eventlet.greenio import SOCKET_CLOSED, CONNECT_ERR, CONNECT_SUCCESS
 orig_socket = __import__('socket')
 socket = orig_socket.socket
 if sys.version_info >= (2, 7):
@@ -199,7 +200,8 @@ class GreenSSLSocket(_original_sslsocket):
                     if get_errno(e) == errno.EWOULDBLOCK:
                         try:
                             trampoline(self, read=True,
-                                       timeout=self.gettimeout(), timeout_exc=timeout_exc('timed out'))
+                                       timeout=self.gettimeout(),
+                                       timeout_exc=timeout_exc('timed out'))
                         except IOClosed:
                             return b''
                     if get_errno(e) in SOCKET_CLOSED:
@@ -259,7 +261,8 @@ class GreenSSLSocket(_original_sslsocket):
                     except orig_socket.error as exc:
                         if get_errno(exc) in CONNECT_ERR:
                             trampoline(self, write=True,
-                                       timeout=end - time.time(), timeout_exc=timeout_exc('timed out'))
+                                       timeout=end - time.time(),
+                                       timeout_exc=timeout_exc('timed out'))
                         elif get_errno(exc) in CONNECT_SUCCESS:
                             return
                         else:
